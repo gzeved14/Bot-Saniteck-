@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    container_name: bot-maracana
+    restart: always
+    env_file:
+      - .env
