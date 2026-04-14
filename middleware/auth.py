@@ -1,7 +1,5 @@
-import sqlite3
 from functools import wraps
-from database.sqlite_mgmt import get_sqlite_conn # Use a função que criamos!
-
+from database.sqlite_mgmt import get_sqlite_conn
 
 def verificar_acesso(user_id):
     """Consulta se o ID do Telegram está no banco de autorizados."""
