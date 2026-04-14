@@ -1,12 +1,15 @@
 import os
 import telebot
 from dotenv import load_dotenv
+
+load_dotenv()
+
 from handlers import vendas, logistica, crm, financeiro, geral
 from database.sqlite_mgmt import init_sqlite
 
+
 def main():
 	init_sqlite()
-	load_dotenv()
 
 	token = os.getenv("TELEGRAM_TOKEN")
 	if not token:

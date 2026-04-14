@@ -3,10 +3,12 @@ import os
 from database.sqlite_mgmt import add_user
 from middleware.auth import verificar_acesso
 
-try:
-    ADMIN_ID = int(os.getenv("ADMIN_USER_ID", ""))
-except ValueError:
-    ADMIN_ID = None
+
+def get_admin_id():
+    try:
+        return int(os.getenv("ADMIN_USER_ID", ""))
+    except ValueError:
+        return None
 
 def register(bot):
     @bot.message_handler(commands=['meuid'])
@@ -16,11 +18,13 @@ def register(bot):
 
     @bot.message_handler(commands=['autorizar'])
     def autorizar(message):
-        if ADMIN_ID is None:
+        admin_id = get_admin_id()
+
+        if admin_id is None:
             bot.reply_to(message, "⚠️ ADMIN_USER_ID não configurado no ambiente.")
             return
 
-        if message.from_user.id != ADMIN_ID:
+        if message.from_user.id != admin_id:
             bot.reply_to(message, "❌ Apenas o administrador pode autorizar usuários.")
             return
 
@@ -41,7 +45,8 @@ def register(bot):
 
     @bot.message_handler(commands=['start', 'ajuda'])
     def send_welcome(message):
-        is_admin = ADMIN_ID is not None and message.from_user.id == ADMIN_ID
+        admin_id = get_admin_id()
+        is_admin = admin_id is not None and message.from_user.id == admin_id
 
         if not verificar_acesso(message.from_user.id):
             help_text = (
