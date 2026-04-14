@@ -15,6 +15,7 @@
 - Atualizado modulo de SQLite para:
   - Criar tabela users quando necessario.
   - Inserir admin inicial via variaveis de ambiente (ADMIN_USER_ID e ADMIN_USER_NAME), sem ID hardcoded.
+  - Usar SQLITE_DB_PATH com fallback para o caminho local do projeto, evitando dependencia de caminho fixo do container.
   - Expor funcao add_user com retorno booleano para evitar duplicidade.
 - Ajustado middleware para usar funcao verificar_acesso com consulta segura no SQLite.
 
@@ -43,6 +44,7 @@
 - Atualizado .env.example com:
   - ADMIN_USER_ID
   - ADMIN_USER_NAME
+  - SQLITE_DB_PATH
 - Atualizado .gitignore para cobrir artefatos SQLite de runtime:
   - *.db-wal
   - *.db-shm
