@@ -46,6 +46,7 @@ Thumbs.db
 dist/
 build/
 *.tmp
+RELATORIO_OBSIDIAN.md
 
 # arquivo base
 maracana-bot.py
