@@ -6,6 +6,7 @@ load_dotenv()
 
 from handlers import vendas, logistica, crm, financeiro, geral
 from database.sqlite_mgmt import init_sqlite
+from middleware.auth import set_bot
 
 
 def main():
@@ -22,6 +23,7 @@ def main():
 		raise ValueError("ADMIN_USER_ID deve ser numérico.")
 
 	bot = telebot.TeleBot(token)
+	set_bot(bot)
 
 	# registrar handlers
 	geral.register(bot)

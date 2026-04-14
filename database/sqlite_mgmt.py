@@ -6,6 +6,9 @@ DB_PATH = os.getenv("SQLITE_DB_PATH", os.path.join(BASE_DIR, "usuarios.db"))
 
 
 def get_sqlite_conn():
+    db_dir = os.path.dirname(DB_PATH)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
     return sqlite3.connect(DB_PATH)
 
 
@@ -22,7 +25,7 @@ def init_sqlite():
 
         admin_id = os.getenv("ADMIN_USER_ID")
         admin_name = os.getenv("ADMIN_USER_NAME", "Administrador")
-        if admin_id:
+        if admin_id and admin_id.isdigit():
             cursor.execute(
                 "INSERT OR IGNORE INTO users (user_id, nome) VALUES (?, ?)",
                 (int(admin_id), admin_name),

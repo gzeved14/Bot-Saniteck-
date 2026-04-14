@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y \
 # Define o diretório de trabalho
 WORKDIR /app
 
+# Prepara diretório gravável para o SQLite
+RUN mkdir -p /app/data
+
 # Copia dependências e instala
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
