@@ -15,8 +15,13 @@ def init_sqlite():
             authorized_by INTEGER
         )
     """)
-    # Aproveita para se auto-autorizar se a tabela estiver vazia
-    cursor.execute("INSERT OR IGNORE INTO users (user_id, nome) VALUES (?, ?)", (1932518276, 'Eduardo'))
+    admin_id = os.getenv("ADMIN_USER_ID")
+    admin_name = os.getenv("ADMIN_USER_NAME", "Administrador")
+    if admin_id and admin_id.isdigit():
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (user_id, nome) VALUES (?, ?)",
+            (int(admin_id), admin_name),
+        )
     conn.commit()
     conn.close()
 

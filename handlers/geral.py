@@ -1,19 +1,54 @@
-# handlers/geral.py
 import os
 
-# Pega os usuários autorizados do .env (ajuste conforme seu middleware se necessário)
-USUARIOS_AUTORIZADOS = [1932518276] 
+from database.sqlite_mgmt import add_user
+from middleware.auth import verificar_acesso
+
+try:
+    ADMIN_ID = int(os.getenv("ADMIN_USER_ID", ""))
+except ValueError:
+    ADMIN_ID = None
 
 def register(bot):
+    @bot.message_handler(commands=['meuid'])
+    def meuid(message):
+        user_id = message.from_user.id
+        bot.reply_to(message, f"Seu ID: `{user_id}`", parse_mode="Markdown")
+
+    @bot.message_handler(commands=['autorizar'])
+    def autorizar(message):
+        if ADMIN_ID is None:
+            bot.reply_to(message, "⚠️ ADMIN_USER_ID não configurado no ambiente.")
+            return
+
+        if message.from_user.id != ADMIN_ID:
+            bot.reply_to(message, "❌ Apenas o administrador pode autorizar usuários.")
+            return
+
+        args = message.text.split()
+        if len(args) < 3:
+            bot.reply_to(message, "⚠️ Use: /autorizar ID NOME")
+            return
+
+        try:
+            novo_id = int(args[1])
+            novo_nome = " ".join(args[2:])
+            if add_user(novo_id, novo_nome):
+                bot.reply_to(message, f"✅ {novo_nome} autorizado!")
+            else:
+                bot.reply_to(message, "ℹ️ Usuário já autorizado.")
+        except ValueError:
+            bot.reply_to(message, "❌ ID inválido.")
+
     @bot.message_handler(commands=['start', 'ajuda'])
     def send_welcome(message):
-        # Verificação simples de acesso (enquanto não migramos pro SQLite)
-        if message.from_user.id not in USUARIOS_AUTORIZADOS:
+        if not verificar_acesso(message.from_user.id):
             bot.reply_to(message, "🚫 Acesso Negado. Fale com o Eduardo.")
             return
 
         help_text = (
             "🤖 *Maracanã BI - Menu Principal*\n\n"
+            "🆔 `/meuid` - Mostra seu ID do Telegram\n"
+            "✅ `/autorizar ID NOME` - Autoriza um novo usuário (admin)\n"
             "💰 `/vendas` - Faturamento do dia\n"
             "🏆 `/vendedores` - Ranking de hoje\n"
             "📊 `/mensal` - Acumulado do mês\n"
